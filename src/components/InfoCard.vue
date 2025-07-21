@@ -8,7 +8,6 @@
     <div class="mt-4">
       <FishComponent v-if="selectedCategory === 'fish'" :fisheryProducts="getFisheryProducts" />
       <VegetableComponent v-else-if="selectedCategory === 'vegetable'" :agriProducts="getAgriProducts" />
-      <div v-else-if="fishClosed || vegetableClosed">今日休市</div>
     </div>  
   </div>
 </template>
@@ -32,16 +31,5 @@ const props = defineProps({
 const { getAgriProducts, getFisheryProducts } = toRefs(props);
 
 const selectedCategory = ref('fish');
-const fishClosed = computed(()=> {
-  return getFisheryProducts.value.length && getFisheryProducts.value?.some(item => item.SeafoodProdName === '休市');
-});
-
-const vegetableClosed = computed(()=> {
-  return getAgriProducts.value.some(item => item.CropName === '休市');
-});
-
-console.log(fishClosed.value, vegetableClosed.value);
-
-
 // 組件邏輯可以在這裡添加
 </script>
