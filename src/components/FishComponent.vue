@@ -17,10 +17,4 @@ const { fisheryProducts } = toRefs(props);
 const fishClosed = computed(()=> {
   return fisheryProducts.value?.find(item => item.SeafoodProdName === '休市');
 });
-
-console.log(fishClosed.value);
 </script>
-
-<style>
-
-</style>

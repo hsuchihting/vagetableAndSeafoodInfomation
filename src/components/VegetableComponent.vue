@@ -13,6 +13,7 @@ const props = defineProps({
   }
 });
 const { agriProducts } = toRefs(props);
+
 const vegetableClosed = computed(()=> {
   return agriProducts.value.find(item => item.CropName === '休市');
 });
