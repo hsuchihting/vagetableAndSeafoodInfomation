@@ -27,13 +27,17 @@ const props = defineProps({
 });
 const { agriProducts } = toRefs(props);
 
+// 待確認休市判斷
 const vegetableClosed = computed(()=> {
   return agriProducts.value.find(item => item.CropName === '休市');
 });
 
+//待確認市場名稱
 const filterMarketName = computed(() => {
   return agriProducts.value?.filter(item => item.marketName !== '桃園');
 });
+
+//todo: 農產品代碼要過濾掉花卉
 
 const dateFormat = (dateStr) => {
   //dateStr 會是 yyy.mm.dd 格式
