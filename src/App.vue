@@ -1,6 +1,6 @@
 <template>
   <div >      
-      <Header class="mb-10 text-left md:flex md:items-end md:justify-between bg-lime-600 py-4 px-5" />
+      <Header class="lg:mb-10 md:mb-6 mb-4 bg-lime-600 py-4 px-5" />
       <InfoCard :getFisheryProducts="fisheryProducts" :getAgriProducts="agriProducts" />
       <Footer class="absolute bottom-0 left-0 right-0" /> 
   </div>
@@ -38,7 +38,7 @@ const fetchFisheryProducts = async () => {
   };
   try {
     const response = await getFisheryProducts(params);
-    fisheryProducts.value = response.data || [];
+    fisheryProducts.value = response.data.Data || [];
   } catch (error) {
     console.error('Error fetching fishery products:', error);
   }
@@ -47,7 +47,7 @@ const fetchFisheryProducts = async () => {
 const fetchAgriProducts = async () => {
   try {
     const response = await getAgriProducts();
-    agriProducts.value = response.data || [];
+    agriProducts.value = response.data.Data || [];
   } catch (error) {
     console.error('Error fetching agricultural products:', error);
   }
