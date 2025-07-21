@@ -1,3 +1,11 @@
+<template>
+  <div >      
+      <Header class="mb-10 text-left md:flex md:items-end md:justify-between bg-lime-600 py-4 px-5" />
+      <InfoCard :getFisheryProducts="fisheryProducts" :getAgriProducts="agriProducts" />
+      <Footer class="absolute bottom-0 left-0 right-0" /> 
+  </div>
+</template>
+
 <script setup>
 import Header from '@/components/Header.vue';
 import InfoCard from '@/components/InfoCard.vue'
@@ -46,10 +54,3 @@ const fetchAgriProducts = async () => {
 };
 </script>
 
-<template>
-  <div >      
-      <Header class="mb-10 text-left md:flex md:items-end md:justify-between bg-lime-600 py-4 px-5" />
-      <InfoCard :getFisheryProducts="fisheryProducts" :getAgriProducts="agriProducts" />
-      <Footer class="absolute bottom-0 left-0 right-0" /> 
-  </div>
-</template>
