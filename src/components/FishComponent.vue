@@ -10,9 +10,7 @@
           <p>高價格: {{ item.Upper_price  }}</p>
           <p>中價格: {{ item.Middle_Price }}</p>
           <p>低價格: {{ item.Lower_price }}</p>
-          <p>平均價格: {{ item.Avg_price }}</p>
-          <p>價格: {{ item.Price }} 元</p>
-          <p>供應量: {{ item.SupplyQty }} 公斤</p>
+          <p>平均價格: {{ item.Avg_price }}</p> 
         </div>  
       </div>
     </div>
@@ -29,11 +27,7 @@ const props = defineProps({
 });
 const { fisheryProducts } = toRefs(props);
 
-const dateFormat = (dateStr) => {
-  if (!dateStr) return '';
-  const date = new Date(dateStr);
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-}
+
 
 const fishClosed = computed(()=> {
   return fisheryProducts.value?.find(item => item.SeafoodProdName === '休市');
@@ -42,4 +36,13 @@ const fishClosed = computed(()=> {
 const filterMarketName = computed(() => {
   return fisheryProducts.value?.filter(item => item.marketName !== '桃園');
 });
+
+const dateFormat = (dateStr) => {
+  //dateStr 會是 yyymmdd 格式, 要轉乘成 yyy-mm-dd 格式
+  if (!dateStr) return '';
+  const year = dateStr.slice(0, 4);
+  const month = dateStr.slice(4, 6);
+  const day = dateStr.slice(6, 8);
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+}
 </script>
