@@ -17,5 +17,6 @@
 </template>
 
 <script setup>
+
 // 組件邏輯可以在這裡添加
 </script>
