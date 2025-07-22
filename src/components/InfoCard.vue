@@ -19,10 +19,6 @@ import VegetableComponent from '@/components/VegetableComponent.vue';
 import { getFisheryProducts, getAgriProducts } from '@/api/url';
 
 const props = defineProps({
-  loading: {
-    type: Boolean,
-    default: false
-  },
   startLoading: {
     type: Function,
     required: true
@@ -32,24 +28,28 @@ const props = defineProps({
     required: true
   }
 });
-const { loading } = toRefs(props);
 
 const selectType = ref('');
 const fisheryProducts = ref([]);
 const agriProducts = ref([]);
 
-const fetchFisheryProducts = async () => {
+const paramsFormatted = (category) =>{
   const today = new Date();
   const year = today.getFullYear() - 1911;
   const month = String(today.getMonth() + 1).padStart(2, '0');
   const day = String(today.getDate()).padStart(2, '0');
-  const paramDate = `${year}${month}${day}`;
+  const paramDate = category === 'fish' ? `${year}${month}${day}` : `${year}.${month}.${day}`;
   const Start_Time  = paramDate;
   const End_Time = paramDate;
   const params = {
     Start_time: Start_Time,
     End_time: End_Time
   };
+  return params;
+}
+
+const fetchFisheryProducts = async () => {
+  const params = paramsFormatted('fish');
   props.startLoading();
   try {
     const res = await getFisheryProducts(params);
@@ -68,17 +68,7 @@ const fetchFisheryProducts = async () => {
 };
 
 const fetchAgriProducts = async () => {
-  const today = new Date();
-  const year = today.getFullYear() - 1911;
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
-  const paramDate = `${year}.${month}.${day}`;
-  const Start_Time = paramDate;
-  const End_Time = paramDate;
-  const params = {
-    Start_time: Start_Time,
-    End_time: End_Time
-  };
+  const params = paramsFormatted('vegetable');  
   props.startLoading();
   try {
     const res = await getAgriProducts(params);
