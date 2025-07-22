@@ -17,16 +17,22 @@ import { ref, toRefs } from 'vue';
 import FishComponent from '@/components/FishComponent.vue';
 import VegetableComponent from '@/components/VegetableComponent.vue';
 import { getFisheryProducts, getAgriProducts } from '@/api/url';
-import { useLoading } from '/src/composables/loading.js';
-const { startLoading, stopLoading } = useLoading();
 
 const props = defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  startLoading: {
+    type: Function,
+    required: true
+  },
+  stopLoading: {
+    type: Function,
+    required: true
   }
 });
-const {loading} = toRefs(props);
+const { loading } = toRefs(props);
 
 const selectType = ref('');
 const fisheryProducts = ref([]);
@@ -44,10 +50,10 @@ const fetchFisheryProducts = async () => {
     Start_time: Start_Time,
     End_time: End_Time
   };
-  startLoading();
+  props.startLoading();
   try {
     const res = await getFisheryProducts(params);
-    if (res && res.data && res.data.Data) {
+    if (res && res.data && res.data?.RS === 'OK') {
       fisheryProducts.value = res.data.Data || [];
       return res;
     } else {
@@ -57,7 +63,7 @@ const fetchFisheryProducts = async () => {
     console.error('Error fetching fishery products:', error);
     return null;
   } finally {
-    stopLoading();
+    props.stopLoading();
   }
 };
 
@@ -73,10 +79,10 @@ const fetchAgriProducts = async () => {
     Start_time: Start_Time,
     End_time: End_Time
   };
-  startLoading();
+  props.startLoading();
   try {
     const res = await getAgriProducts(params);
-    if (res && res.data && res.data.Data) {
+    if (res && res.data && res.data?.RS === 'OK') {
       agriProducts.value = res.data.Data;
       return res;
     } else {
@@ -86,7 +92,7 @@ const fetchAgriProducts = async () => {
     console.error('Error fetching agricultural products:', error);
     return null;
   } finally {
-    stopLoading();
+    props.stopLoading();
   }
 };
 

@@ -1,7 +1,7 @@
 <template>
   <div>      
       <Header class="lg:mb-10 md:mb-6 mb-4 bg-lime-600 py-4 px-5" />
-      <InfoCard :loading="loading" />
+      <InfoCard :loading="loading" :startLoading="startLoading" :stopLoading="stopLoading" />
       <Footer /> 
       <Loading v-if="loading"/>
   </div>
@@ -13,6 +13,6 @@ import InfoCard from '@/components/InfoCard.vue';
 import Footer from '@/components/Footer.vue';
 import Loading from '@/components/Loading.vue';
 import { useLoading } from '/src/composables/loading.js';
-const { loading } = useLoading();
+const { loading, startLoading, stopLoading } = useLoading();
 </script>
 
