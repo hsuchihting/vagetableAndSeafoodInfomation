@@ -3,7 +3,7 @@
     <p v-if="fishClosed">今日休市</p>
     <div v-else>
       <div class="bg-white p-4 rounded-lg shadow-md">
-        <div class="grid gap-4 md:gap-6 col-span-3" v-for="item in filterMarketName" :key="item.SeafoodProdCode">
+        <div class="grid gap-4 md:gap-6 col-span-3" v-for="item in fisheryProducts" :key="item.SeafoodProdCode">
           <h2 class="text-xl font-semibold">{{ item.SeafoodProdName }}</h2>
           <p>交易日期： {{ dateFormat(item.TransDate) }} </p>
           <p>市場名稱: {{ item.marketName }}</p>
@@ -30,12 +30,18 @@ const { fisheryProducts } = toRefs(props);
 
 
 const fishClosed = computed(()=> {
-  return fisheryProducts.value?.find(item => item.SeafoodProdName === '休市');
+  return fisheryProducts.value?.some(item => item.SeafoodProdName === '休市');
 });
+
+console.log('fishClosed', fishClosed.value);
+
 
 const filterMarketName = computed(() => {
   return fisheryProducts.value?.filter(item => item.marketName !== '桃園');
 });
+
+console.log('filterMarketName', filterMarketName.value);
+
 
 const dateFormat = (dateStr) => {
   //dateStr 會是 yyymmdd 格式, 要轉乘成 yyy-mm-dd 格式
