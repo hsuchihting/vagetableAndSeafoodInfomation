@@ -18,8 +18,6 @@
   </div>
 </template>
 
-
-
 <script setup>
 import { computed, onMounted, watch } from 'vue';
 const props = defineProps({
@@ -28,17 +26,6 @@ const props = defineProps({
     default: () => []
   },
 });
-
-console.log('fisheryProducts', props.fisheryProducts);
-
-onMounted(() => {
-  console.log('fish Component is work!');
-  
-});
-
-watch(props.fisheryProducts, (newVal) => {
-  console.log('fisheryProducts updated:', newVal);
-}, { immediate: true });
 
 const fishClosed = computed(() => {
   return props.fisheryProducts?.every(item => item.SeafoodProdName === '休市');

@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4">
+  <div class="container mx-auto px-4">
     <div class="flex items-center space-x-4">
       <button class="border border-blue-300 bg-blue-300 rounded-md py-2 px-5 text-xl text-blue-700" @click="selectCategory('fish')">我要買魚</button>
       <button class="border border-lime-600 bg-lime-600 rounded-md py-2 px-5 text-xl text-lime-200" @click="selectCategory('vegetable')">我要買菜</button>
@@ -55,7 +55,6 @@ const fetchFisheryProducts = async () => {
     const res = await getFisheryProducts(params);
     if (res && res.data && res.data?.Data.length) {
       fisheryProducts.value = res.data?.Data || [];
-      console.log('fish: ',fisheryProducts.value)
       return fisheryProducts.value;
     } else {
       throw new Error('No data found');
@@ -73,8 +72,8 @@ const fetchAgriProducts = async () => {
   props.startLoading();
   try {
     const res = await getAgriProducts(params);
-    if (res && res.data && res.data?.RS === 'OK') {
-      agriProducts.value = res.data.Data;
+    if (res && res.data && res.data?.Data.length) {
+      agriProducts.value = res.data?.Data;
       return agriProducts.value;
     } else {
       throw new Error('No data found');
