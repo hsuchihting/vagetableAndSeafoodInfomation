@@ -1,7 +1,7 @@
 <template>
   <footer>
     <div class="bg-lime-800 text-white text-center py-4 mt-10">
-      <p>© {{ year }} 蔬菜與海鮮資訊. All rights reserved.</p>
+      <p class="text-sm md:text-base">© {{ year }} 蔬菜與海鮮資訊. All rights reserved.</p>
     </div>
   </footer>
 </template>

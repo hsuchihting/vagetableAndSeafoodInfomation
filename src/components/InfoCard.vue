@@ -53,9 +53,10 @@ const fetchFisheryProducts = async () => {
   props.startLoading();
   try {
     const res = await getFisheryProducts(params);
-    if (res && res.data && res.data?.RS === 'OK') {
-      fisheryProducts.value = res.data.Data || [];
-      return res;
+    if (res && res.data && res.data?.Data.length) {
+      fisheryProducts.value = res.data?.Data || [];
+      console.log('fish: ',fisheryProducts.value)
+      return fisheryProducts.value;
     } else {
       throw new Error('No data found');
     }
@@ -74,7 +75,7 @@ const fetchAgriProducts = async () => {
     const res = await getAgriProducts(params);
     if (res && res.data && res.data?.RS === 'OK') {
       agriProducts.value = res.data.Data;
-      return res;
+      return agriProducts.value;
     } else {
       throw new Error('No data found');
     }
@@ -87,7 +88,8 @@ const fetchAgriProducts = async () => {
 };
 
 const selectCategory = (category) => {
-  if (category === 'fish' && selectType.value !== 'fish') {
+  selectType.value = category; // 先切換顯示的元件
+  if (category === 'fish') {
     fetchFisheryProducts();
   } else if (category === 'vegetable') {
     fetchAgriProducts();

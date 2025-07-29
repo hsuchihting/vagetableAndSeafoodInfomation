@@ -1,6 +1,6 @@
 <template>
   <div>      
-      <Header class="lg:mb-10 md:mb-6 mb-4 bg-lime-600 py-4 px-5" />
+      <Header class="lg:mb-10 md:mb-6 mb-4  py-4 px-5" />
       <InfoCard :startLoading="startLoading" :stopLoading="stopLoading" />
       <Footer /> 
       <Loading v-if="loading"/>
