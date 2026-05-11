@@ -107,6 +107,39 @@
         </div>
       </article>
     </div>
+
+    <div
+      v-if="!closed && products.length && totalPages > 1"
+      class="mt-6 flex flex-wrap items-center justify-center gap-2"
+      aria-label="底部分頁選擇"
+    >
+      <button
+        class="min-h-[40px] rounded-md border border-slate-300 bg-white px-3 text-sm font-bold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+        type="button"
+        :disabled="currentPage === 1"
+        @click="goToPage(currentPage - 1)"
+      >
+        上一頁
+      </button>
+      <button
+        v-for="page in pageNumbers"
+        :key="`bottom-${page}`"
+        :class="pageButtonClass(page)"
+        type="button"
+        :aria-current="currentPage === page ? 'page' : undefined"
+        @click="goToPage(page)"
+      >
+        {{ page }}
+      </button>
+      <button
+        class="min-h-[40px] rounded-md border border-slate-300 bg-white px-3 text-sm font-bold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+        type="button"
+        :disabled="currentPage === totalPages"
+        @click="goToPage(currentPage + 1)"
+      >
+        下一頁
+      </button>
+    </div>
   </section>
 </template>
 
