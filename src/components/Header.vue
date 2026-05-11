@@ -25,15 +25,17 @@ const props = defineProps({
   },
 });
 
+const base = import.meta.env.BASE_URL;
+
 const themes = {
   vegetable: {
-    image: '/images/header-vegetables.png',
+    image: `${base}images/header-vegetables.png`,
     eyebrow: 'text-emerald-800',
     eyebrowText: '蔬果批發行情',
     overlay: 'bg-gradient-to-r from-white/90 via-white/70 to-white/10',
   },
   fish: {
-    image: '/images/header-fish.png',
+    image: `${base}images/header-fish.png`,
     eyebrow: 'text-sky-800',
     eyebrowText: '漁貨批發行情',
     overlay: 'bg-gradient-to-r from-white/90 via-sky-50/70 to-sky-200/10',
