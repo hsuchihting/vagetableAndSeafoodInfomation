@@ -16,13 +16,46 @@
       <p class="mt-2 text-sm">{{ emptyDescription }}</p>
     </div>
 
-    <p v-if="!closed && products.length && hasHiddenItems" class="mb-4 rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-      目前先顯示前 {{ displayLimit }} 筆資料，可使用搜尋快速縮小範圍。
-    </p>
+    <div
+      v-if="!closed && products.length"
+      class="mb-4 flex flex-col gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 shadow-sm sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>
+        第 {{ currentPage }} / {{ totalPages }} 頁，顯示第 {{ rangeStart }} - {{ rangeEnd }} 筆，共 {{ products.length }} 筆
+      </p>
+      <div v-if="totalPages > 1" class="flex flex-wrap items-center gap-2" aria-label="分頁選擇">
+        <button
+          class="min-h-[40px] rounded-md border border-slate-300 bg-white px-3 text-sm font-bold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+          type="button"
+          :disabled="currentPage === 1"
+          @click="goToPage(currentPage - 1)"
+        >
+          上一頁
+        </button>
+        <button
+          v-for="page in pageNumbers"
+          :key="page"
+          :class="pageButtonClass(page)"
+          type="button"
+          :aria-current="currentPage === page ? 'page' : undefined"
+          @click="goToPage(page)"
+        >
+          {{ page }}
+        </button>
+        <button
+          class="min-h-[40px] rounded-md border border-slate-300 bg-white px-3 text-sm font-bold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+          type="button"
+          :disabled="currentPage === totalPages"
+          @click="goToPage(currentPage + 1)"
+        >
+          下一頁
+        </button>
+      </div>
+    </div>
 
     <div v-if="!closed && products.length" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
       <article
-        v-for="item in visibleProducts"
+        v-for="item in paginatedProducts"
         :key="item.id"
         class="flex min-h-[260px] flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
       >
@@ -78,7 +111,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const props = defineProps({
   products: {
@@ -97,9 +130,9 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  displayLimit: {
+  pageSize: {
     type: Number,
-    default: 120,
+    default: 50,
   },
 });
 
@@ -108,12 +141,14 @@ const themes = {
     eyebrow: 'text-emerald-700',
     badge: 'bg-emerald-100 text-emerald-800',
     averageBox: 'bg-emerald-700 text-white',
+    paginationActive: 'bg-emerald-700',
     label: '蔬果行情',
   },
   fish: {
     eyebrow: 'text-sky-700',
     badge: 'bg-sky-100 text-sky-800',
     averageBox: 'bg-sky-700 text-white',
+    paginationActive: 'bg-sky-700',
     label: '漁貨行情',
   },
 };
@@ -121,8 +156,14 @@ const themes = {
 const theme = computed(() => themes[props.category] || themes.vegetable);
 const categoryLabel = computed(() => theme.value.label);
 const hasSearchTerm = computed(() => props.searchTerm.trim().length > 0);
-const visibleProducts = computed(() => props.products.slice(0, props.displayLimit));
-const hasHiddenItems = computed(() => props.products.length > props.displayLimit);
+const currentPage = ref(1);
+const totalPages = computed(() => Math.max(1, Math.ceil(props.products.length / props.pageSize)));
+const pageStartIndex = computed(() => (currentPage.value - 1) * props.pageSize);
+const paginatedProducts = computed(() => {
+  return props.products.slice(pageStartIndex.value, pageStartIndex.value + props.pageSize);
+});
+const rangeStart = computed(() => props.products.length ? pageStartIndex.value + 1 : 0);
+const rangeEnd = computed(() => Math.min(pageStartIndex.value + props.pageSize, props.products.length));
 const emptyTitle = computed(() => hasSearchTerm.value ? '找不到符合的品項' : '目前沒有資料');
 const emptyDescription = computed(() => {
   if (hasSearchTerm.value) {
@@ -130,5 +171,30 @@ const emptyDescription = computed(() => {
   }
 
   return '請稍後再試，或切換另一個品項類別。';
+});
+
+const pageNumbers = computed(() => {
+  return Array.from({ length: totalPages.value }, (_, index) => index + 1);
+});
+
+const goToPage = (page) => {
+  currentPage.value = Math.min(Math.max(page, 1), totalPages.value);
+};
+
+const pageButtonClass = (page) => [
+  'min-h-[40px] min-w-[40px] rounded-md border px-3 text-sm font-bold transition',
+  currentPage.value === page
+    ? `${theme.value.paginationActive} border-transparent text-white`
+    : 'border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-50',
+];
+
+watch(() => [props.products, props.searchTerm, props.category], () => {
+  currentPage.value = 1;
+});
+
+watch(totalPages, (pages) => {
+  if (currentPage.value > pages) {
+    currentPage.value = pages;
+  }
 });
 </script>
