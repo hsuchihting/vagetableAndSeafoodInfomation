@@ -53,7 +53,7 @@
           <span :class="['rounded-full px-3 py-1 font-bold', activeCategory.chipClass]">
             {{ activeCategory.label }}
           </span>
-          <span>更新日期 {{ todayLabel }}</span>
+          <span>{{ activeDateText }}</span>
           <span>顯示 {{ activeCount }} / {{ activeTotalCount }} 筆</span>
         </div>
       </div>
@@ -107,7 +107,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import FishComponent from '@/components/FishComponent.vue';
 import VegetableComponent from '@/components/VegetableComponent.vue';
 import { getFisheryProducts, getAgriProducts } from '@/api/url';
-import { filterMarketProducts, normalizeMarketProducts } from '@/utils/marketData';
+import { filterMarketProducts, formatMarketDate, normalizeMarketProducts } from '@/utils/marketData';
 
 const props = defineProps({
   startLoading: {
@@ -152,6 +152,7 @@ const fisheryProducts = ref([]);
 const agriProducts = ref([]);
 const errorMessage = ref('');
 const searchTerm = ref('');
+const fishLatestDate = ref('');
 
 const todayLabel = computed(() => new Date().toLocaleDateString('zh-TW', {
   year: 'numeric',
@@ -161,6 +162,14 @@ const todayLabel = computed(() => new Date().toLocaleDateString('zh-TW', {
 
 const activeCategory = computed(() => {
   return categories.find((category) => category.value === selectType.value) || categories[0];
+});
+
+const activeDateText = computed(() => {
+  if (selectType.value === 'fish' && fishLatestDate.value) {
+    return `最新交易日 ${formatMarketDate(fishLatestDate.value)}`;
+  }
+
+  return `更新日期 ${todayLabel.value}`;
 });
 
 const activeCount = computed(() => {
@@ -207,16 +216,25 @@ const paramsFormatted = (category) =>{
   return params;
 }
 
+const getLatestTransDate = (items = []) => {
+  return items.reduce((latestDate, item) => {
+    const transDate = String(item?.['交易日期'] || item?.TransDate || item?.transDate || '').trim();
+    if (!transDate) return latestDate;
+    return !latestDate || transDate > latestDate ? transDate : latestDate;
+  }, '');
+};
+
 const fetchFisheryProducts = async () => {
-  const params = paramsFormatted('fish');
   props.startLoading();
   errorMessage.value = '';
   try {
-    const res = await getFisheryProducts(params);
-    if (res && res.data && res.data?.Data.length) {
-      fisheryProducts.value = res.data?.Data || [];
+    const res = await getFisheryProducts();
+    if (res && Array.isArray(res.data) && res.data.length) {
+      fishLatestDate.value = getLatestTransDate(res.data);
+      fisheryProducts.value = res.data.filter((item) => String(item['交易日期']) === fishLatestDate.value);
       return fisheryProducts.value;
     } else {
+      fishLatestDate.value = '';
       fisheryProducts.value = [];
       throw new Error('目前查無漁貨交易資料');
     }

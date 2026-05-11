@@ -20,7 +20,7 @@
 本專案使用農業部資料開放平台 API：
 
 - 農產品交易行情：`FarmTransData.aspx?IsTransData=1&UnitId=037`
-- 漁產品交易行情：`FisheryProductsTransType`
+- 漁產品交易行情：`AquaticTransData.aspx?IsTransData=1&UnitId=039`
 
 API Base URL：
 
@@ -29,10 +29,12 @@ https://data.moa.gov.tw/api/v1
 https://data.moa.gov.tw/Service/OpenData/FromM
 ```
 
-資料會依今日日期查詢：
+資料日期處理：
 
 - 蔬果日期格式：民國年 `YYY.MM.DD`
+- 蔬果會依今日日期顯示當日行情
 - 漁貨日期格式：民國年 `YYYMMDD`
+- 漁貨 API 會回傳多個交易日，前端會取最新交易日顯示
 
 ## 技術架構
 

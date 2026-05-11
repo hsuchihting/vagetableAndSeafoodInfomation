@@ -4,8 +4,8 @@ const fieldAliases = {
     code: ['CropCode', '作物代號'],
   },
   fish: {
-    name: ['SeafoodProdName', 'FishName'],
-    code: ['SeafoodProdCode', 'FishCode'],
+    name: ['SeafoodProdName', 'FishName', '魚貨名稱'],
+    code: ['SeafoodProdCode', 'FishCode', '品種代碼'],
   },
   shared: {
     type: ['TcType', '種類代碼'],
