@@ -19,13 +19,14 @@
 
 本專案使用農業部資料開放平台 API：
 
-- 農產品交易行情：`AgriProductsTransType`
+- 農產品交易行情：`FarmTransData.aspx?IsTransData=1&UnitId=037`
 - 漁產品交易行情：`FisheryProductsTransType`
 
 API Base URL：
 
 ```txt
 https://data.moa.gov.tw/api/v1
+https://data.moa.gov.tw/Service/OpenData/FromM
 ```
 
 資料會依今日日期查詢：
@@ -125,4 +126,4 @@ base: '/vagetableAndSeafoodInfomation/'
 
 ## 備註
 
-如果當日 API 回傳資料皆為休市，頁面會顯示「今日休市」。如果某分類沒有有效交易資料，搜尋與資料筆數也會同步顯示 0 筆。
+如果當日 API 回傳資料皆為休市，頁面會顯示「今日休市」。如果某分類沒有有效交易資料，搜尋與資料筆數也會同步顯示 0 筆。蔬果資料來源會回傳多個交易日期，前端會過濾為今日資料後再顯示。

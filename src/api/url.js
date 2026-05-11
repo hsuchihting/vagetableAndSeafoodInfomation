@@ -1,6 +1,7 @@
 import { get } from './methods';
 
 const baseUrl = 'https://data.moa.gov.tw/api/v1';
+const openDataBaseUrl = 'https://data.moa.gov.tw/Service/OpenData/FromM';
 
 /**
  * 農漁產品交易 API
@@ -8,7 +9,7 @@ const baseUrl = 'https://data.moa.gov.tw/api/v1';
  * @name AgriProductsTransType - 農產品交易類型
  */
 const fisheryProductsTransType = `${baseUrl}/FisheryProductsTransType`;
-const agriProductsTransType = `${baseUrl}/AgriProductsTransType`;
+const farmTransData = `${openDataBaseUrl}/FarmTransData.aspx`;
 
 /**
  * @name getFisheryProducts - 獲取漁產品交易數據
@@ -20,6 +21,9 @@ export const getFisheryProducts = (params = {}) => {
   return get(fisheryProductsTransType, params);
 };
 
-export const getAgriProducts = (params = {}) => {
-  return get(agriProductsTransType, params);
+export const getAgriProducts = () => {
+  return get(farmTransData, {
+    IsTransData: 1,
+    UnitId: '037'
+  });
 };

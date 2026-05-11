@@ -230,13 +230,13 @@ const fetchFisheryProducts = async () => {
 };
 
 const fetchAgriProducts = async () => {
-  const params = paramsFormatted('vegetable');  
+  const params = paramsFormatted('vegetable');
   props.startLoading();
   errorMessage.value = '';
   try {
-    const res = await getAgriProducts(params);
-    if (res && res.data && res.data?.Data.length) {
-      agriProducts.value = res.data?.Data;
+    const res = await getAgriProducts();
+    if (res && Array.isArray(res.data) && res.data.length) {
+      agriProducts.value = res.data.filter((item) => item['交易日期'] === params.Start_time);
       return agriProducts.value;
     } else {
       agriProducts.value = [];

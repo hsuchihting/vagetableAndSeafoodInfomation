@@ -1,20 +1,21 @@
 const fieldAliases = {
   vegetable: {
-    name: ['CropName'],
-    code: ['CropCode'],
+    name: ['CropName', '作物名稱'],
+    code: ['CropCode', '作物代號'],
   },
   fish: {
     name: ['SeafoodProdName', 'FishName'],
     code: ['SeafoodProdCode', 'FishCode'],
   },
   shared: {
-    date: ['TransDate', 'transDate'],
-    market: ['MarketName', 'marketName'],
-    upperPrice: ['Upper_Price', 'Upper_price', 'UpperPrice'],
-    middlePrice: ['Middle_Price', 'Middle_price', 'MiddlePrice'],
-    lowerPrice: ['Lower_Price', 'Lower_price', 'LowerPrice'],
-    avgPrice: ['Avg_Price', 'Avg_price', 'AvgPrice'],
-    quantity: ['Trans_Quantity', 'Trans_quantity', 'TransQuantity'],
+    type: ['TcType', '種類代碼'],
+    date: ['TransDate', 'transDate', '交易日期'],
+    market: ['MarketName', 'marketName', '市場名稱'],
+    upperPrice: ['Upper_Price', 'Upper_price', 'UpperPrice', '上價'],
+    middlePrice: ['Middle_Price', 'Middle_price', 'MiddlePrice', '中價'],
+    lowerPrice: ['Lower_Price', 'Lower_price', 'LowerPrice', '下價'],
+    avgPrice: ['Avg_Price', 'Avg_price', 'AvgPrice', '平均價'],
+    quantity: ['Trans_Quantity', 'Trans_quantity', 'TransQuantity', '交易量'],
   },
 };
 
@@ -48,9 +49,10 @@ const productSearchFields = [
 const shouldShowItem = (item, type) => {
   const aliases = fieldAliases[type];
   const name = getValue(item, aliases.name);
+  const transType = getValue(item, fieldAliases.shared.type);
 
   if (name === '休市') return false;
-  if (type === 'vegetable' && item.TcType === 'N06') return false;
+  if (type === 'vegetable' && transType === 'N06') return false;
 
   return true;
 };

@@ -16,9 +16,13 @@
       <p class="mt-2 text-sm">{{ emptyDescription }}</p>
     </div>
 
-    <div v-else class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+    <p v-if="!closed && products.length && hasHiddenItems" class="mb-4 rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+      目前先顯示前 {{ displayLimit }} 筆資料，可使用搜尋快速縮小範圍。
+    </p>
+
+    <div v-if="!closed && products.length" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
       <article
-        v-for="item in products"
+        v-for="item in visibleProducts"
         :key="item.id"
         class="flex min-h-[260px] flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
       >
@@ -93,6 +97,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  displayLimit: {
+    type: Number,
+    default: 120,
+  },
 });
 
 const themes = {
@@ -113,6 +121,8 @@ const themes = {
 const theme = computed(() => themes[props.category] || themes.vegetable);
 const categoryLabel = computed(() => theme.value.label);
 const hasSearchTerm = computed(() => props.searchTerm.trim().length > 0);
+const visibleProducts = computed(() => props.products.slice(0, props.displayLimit));
+const hasHiddenItems = computed(() => props.products.length > props.displayLimit);
 const emptyTitle = computed(() => hasSearchTerm.value ? '找不到符合的品項' : '目前沒有資料');
 const emptyDescription = computed(() => {
   if (hasSearchTerm.value) {
