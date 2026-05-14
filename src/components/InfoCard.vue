@@ -107,6 +107,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import FishComponent from '@/components/FishComponent.vue';
 import VegetableComponent from '@/components/VegetableComponent.vue';
 import { getFisheryProducts, getAgriProducts } from '@/api/url';
+import { seafoodGuideItems } from '@/data/seafoodGuide';
 import { filterMarketProducts, formatMarketDate, normalizeMarketProducts } from '@/utils/marketData';
 
 const props = defineProps({
@@ -174,7 +175,7 @@ const activeDateText = computed(() => {
 
 const activeCount = computed(() => {
   if (selectType.value === 'fish') {
-    return filterMarketProducts(normalizeMarketProducts(fisheryProducts.value, 'fish'), searchTerm.value).length;
+    return filterMarketProducts(normalizeMarketProducts(fisheryProducts.value, 'fish', seafoodGuideItems), searchTerm.value).length;
   }
 
   return filterMarketProducts(normalizeMarketProducts(agriProducts.value, 'vegetable'), searchTerm.value).length;
@@ -182,7 +183,7 @@ const activeCount = computed(() => {
 
 const activeTotalCount = computed(() => {
   if (selectType.value === 'fish') {
-    return normalizeMarketProducts(fisheryProducts.value, 'fish').length;
+    return normalizeMarketProducts(fisheryProducts.value, 'fish', seafoodGuideItems).length;
   }
 
   return normalizeMarketProducts(agriProducts.value, 'vegetable').length;

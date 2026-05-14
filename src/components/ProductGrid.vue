@@ -60,11 +60,28 @@
         class="flex min-h-[260px] flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
       >
         <div class="flex items-start justify-between gap-3">
-          <div>
+          <div class="min-w-0 flex-1">
             <p :class="['text-xs font-semibold tracking-wide', theme.eyebrow]">
               {{ categoryLabel }}
             </p>
-            <h2 class="mt-1 text-2xl font-bold text-slate-900">{{ item.name }}</h2>
+            <div class="mt-1 flex flex-wrap items-center gap-2">
+              <h2 class="text-2xl font-bold text-slate-900">{{ item.name }}</h2>
+              <div
+                v-if="item.seafoodGuide"
+                class="flex flex-wrap gap-2"
+                :title="`海鮮指南比對：${item.seafoodGuide.name}`"
+              >
+                <span class="rounded-full bg-sky-50 px-3 py-1 text-xs font-bold text-sky-800 ring-1 ring-sky-100">
+                  {{ item.seafoodGuide.sourceType }}
+                </span>
+                <span class="rounded-full bg-cyan-50 px-3 py-1 text-xs font-bold text-cyan-800 ring-1 ring-cyan-100">
+                  {{ item.seafoodGuide.origin }}
+                </span>
+                <span :class="['rounded-full px-3 py-1 text-xs font-bold ring-1', sustainabilityClass(item.seafoodGuide.category)]">
+                  永續建議：{{ item.seafoodGuide.sustainabilityLabel }}
+                </span>
+              </div>
+            </div>
           </div>
           <span :class="['shrink-0 rounded-full px-3 py-1 text-xs font-semibold', theme.badge]">
             {{ item.code }}
@@ -220,6 +237,16 @@ const pageButtonClass = (page) => [
     ? `${theme.value.paginationActive} border-transparent text-white`
     : 'border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-50',
 ];
+
+const sustainabilityClass = (category) => {
+  const classMap = {
+    0: 'bg-emerald-50 text-emerald-800 ring-emerald-100',
+    1: 'bg-amber-50 text-amber-800 ring-amber-100',
+    2: 'bg-rose-50 text-rose-800 ring-rose-100',
+  };
+
+  return classMap[category] || 'bg-slate-50 text-slate-700 ring-slate-100';
+};
 
 watch(() => [props.products, props.searchTerm, props.category], () => {
   currentPage.value = 1;

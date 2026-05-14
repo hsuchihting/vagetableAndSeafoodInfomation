@@ -44,7 +44,17 @@ const productSearchFields = [
   'lowerPrice',
   'avgPrice',
   'quantity',
+  'guideName',
+  'guideSourceType',
+  'guideOrigin',
+  'sustainabilityLabel',
 ];
+
+const sustainabilityLabels = {
+  0: '建議食用',
+  1: '斟酌食用',
+  2: '避免食用',
+};
 
 const shouldShowItem = (item, type) => {
   const aliases = fieldAliases[type];
@@ -88,7 +98,47 @@ export const formatMarketDate = (dateValue) => {
   return date;
 };
 
-export const normalizeMarketProducts = (items = [], type) => {
+const normalizeGuideName = (value) => {
+  return String(value || '')
+    .replace(/[（(].*?[）)]/g, '')
+    .replace(/冷凍|凍|養殖|野生|進口|其他/g, '')
+    .replace(/[\s　/／、,，-]/g, '')
+    .trim()
+    .toLowerCase();
+};
+
+const getGuideNameTokens = (name) => {
+  const rawName = String(name || '');
+  const baseName = normalizeGuideName(rawName);
+  const aliasText = rawName.match(/[（(](.*?)[）)]/)?.[1] || '';
+  const aliasTokens = aliasText.split(/[\/／、,，]/).map(normalizeGuideName);
+
+  return [...new Set([baseName, ...aliasTokens])].filter((token) => token.length >= 2);
+};
+
+export const findSeafoodGuideMatch = (productName, guideItems = []) => {
+  const normalizedProductName = normalizeGuideName(productName);
+  if (!normalizedProductName || !guideItems.length) return null;
+
+  const matches = guideItems.flatMap((guideItem) => {
+    return getGuideNameTokens(guideItem.name)
+      .filter((token) => normalizedProductName === token || normalizedProductName.includes(token) || token.includes(normalizedProductName))
+      .map((token) => ({
+        guideItem,
+        score: token.length + (normalizedProductName === token ? 100 : 0),
+      }));
+  });
+
+  const bestMatch = matches.sort((a, b) => b.score - a.score)[0]?.guideItem;
+  if (!bestMatch) return null;
+
+  return {
+    ...bestMatch,
+    sustainabilityLabel: sustainabilityLabels[bestMatch.category] || '未分類',
+  };
+};
+
+export const normalizeMarketProducts = (items = [], type, seafoodGuideItems = []) => {
   const aliases = fieldAliases[type];
 
   return items.filter((item) => shouldShowItem(item, type)).map((item, index) => {
@@ -96,6 +146,7 @@ export const normalizeMarketProducts = (items = [], type) => {
     const code = getValue(item, aliases.code);
     const rawDate = getValue(item, fieldAliases.shared.date);
     const market = getValue(item, fieldAliases.shared.market);
+    const seafoodGuide = type === 'fish' ? findSeafoodGuideMatch(name, seafoodGuideItems) : null;
 
     return {
       id: `${type}-${code || name || index}-${rawDate || index}-${index}`,
@@ -108,6 +159,11 @@ export const normalizeMarketProducts = (items = [], type) => {
       lowerPrice: displayValue(getValue(item, fieldAliases.shared.lowerPrice)),
       avgPrice: displayValue(getValue(item, fieldAliases.shared.avgPrice)),
       quantity: getValue(item, fieldAliases.shared.quantity),
+      seafoodGuide,
+      guideName: seafoodGuide?.name || '',
+      guideSourceType: seafoodGuide?.sourceType || '',
+      guideOrigin: seafoodGuide?.origin || '',
+      sustainabilityLabel: seafoodGuide?.sustainabilityLabel || '',
     };
   });
 };

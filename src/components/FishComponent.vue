@@ -11,6 +11,7 @@
 <script setup>
 import { computed } from 'vue';
 import ProductGrid from '@/components/ProductGrid.vue';
+import { seafoodGuideItems } from '@/data/seafoodGuide';
 import { filterMarketProducts, isMarketClosed, normalizeMarketProducts } from '@/utils/marketData';
 
 const props = defineProps({
@@ -24,7 +25,7 @@ const props = defineProps({
   },
 });
 
-const normalizedProducts = computed(() => normalizeMarketProducts(props.fisheryProducts, 'fish'));
+const normalizedProducts = computed(() => normalizeMarketProducts(props.fisheryProducts, 'fish', seafoodGuideItems));
 const products = computed(() => filterMarketProducts(normalizedProducts.value, props.searchTerm));
 const fishClosed = computed(() => isMarketClosed(props.fisheryProducts, 'fish'));
 </script>
